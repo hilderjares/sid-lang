@@ -8,28 +8,42 @@ int yyerror(char *s);
 %}
 
 %start program
+
 %token INICIO FIM DIVISAO EXPOENTE FLOAT MULT BRAC_ESR BRAC_DIR MAIS MENOS IGUAL TERMINADOR INTEGER ID DIGIT
 
 %%
 
-program: INICIO declaration_list FIM;
-
-declaration_list: stmt_list;
+program: INICIO stmt_list FIM;
 
 stmt_list: stmt | 
-           stmt TERMINADOR; 
+           stmt TERMINADOR stmt_list; 
 
 stmt: ID IGUAL expression;
 
-expression: expression MAIS term |
+/* expression: expression MAIS term |
             expression MENOS term |
-            INTEGER;
+            term; */
 
-term: term MULT factor |
+/* term: term MULT factor |
       term DIVISAO factor |
       factor;
+ */
 
-factor: exp '^' factor |
+e: {};
+
+expression: term expressionl;
+
+expressionl: MAIS term expressionl |
+             MENOS term expressionl |
+             e;
+
+term: factor terml;
+
+terml: MULT factor terml |
+       DIVISAO factor terml |
+       e;
+
+factor: exp EXPOENTE factor |
         exp;
 
 exp: ID |
